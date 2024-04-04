@@ -90,6 +90,7 @@ Store ID is the primary key of the stores table. The stores table contains the s
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Queries:
+
 #1 Show me runners participated in races between january and february:
 
 SELECT RunnerFirstName,RunnerLastName
