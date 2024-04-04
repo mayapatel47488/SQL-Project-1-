@@ -1,5 +1,5 @@
 # SQL-Project-1
-MIST 4610 - SQL Project 1 
+MIST 4610 - SQL Project 1
 
 Problem Description: 
 Pretend you are the owner/operator of a RUNNING association (club)
