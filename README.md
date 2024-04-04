@@ -29,8 +29,64 @@ Equipment and Gear: Our club may provide access to equipment and gear, such as r
 
 Given this overview, the database should encompass key entities such as Members, Coaches, Events, Races, Training Programs, Workshops, Community Partnerships, Equipment, and Transactions, along with their associated attributes and relationships to effectively manage club operations, member registrations, event planning, coaching services, and inventory tracking.
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Data Model: 
 ![Runner Data Model](DataM.png)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DATA MODEL DESCRIPTION: 
+
+Runners
+
+The Runners table identifies the ID of the runners, their first and last names, their email, their phone number, and their coach. Each runner has one ID as the primary key of the table. Each runner has one coach, and coach ID is the foreign key that connects runners to the coaches table. 
+
+Coaches
+
+The Coaches table is related to the Runners table through the Coach ID(primary key). The Coaches table contains the Coach ID, Coach first and last name, Coach email, and Coaching certification. One coach can have multiple runners and training programs, making it a one-to-many relationship. 
+
+Training Programs
+
+The primary key for the training programs table is the Program ID. This table contains the program name, duration, schedule, and focus areas. Coaches ID is the foreign key that references the Coaches table. Coaches can have multiple training programs. Each program has one coach, which makes it a one-to-many relationship. 
+
+Recordings
+
+The recordings program is an associative entity between training programs and runners. Runner ID and Program ID are the foreign keys of the table that reference the Runners and Training Program tables. The recordings table identifies training completion and location of the training. Runners can have multiple training programs, and each training program can have multiple recorded entries. 
+
+Equipment
+
+This table is used for identifying the equipment ID, the equipment type, and the equipment year. The equipment table’s primary key is the equipment ID. The runner ID is used as a foreign key that references the runner’s table. Each runner can have multiple pieces of equipment. 
+
+Medical Information
+
+The medical information table identifies the name of the doctors and the location the doctors were at. The medical ID is the primary key of the table, and runner ID is the foreign key that references the runners table. Each runner has one doctor, making it a one-to-one relationship.
+
+Attendance
+
+Attendance is an associative entity that references the runners and the events tables. Runner ID and event ID are the foreign keys. The attendance table identifies the guest count for each runner as well as the club check-in. 
+
+Events
+
+The events table identifies the ID of the event as the primary key, the name of the event, the event type, the event date, and the location of the event. 
+
+Races
+
+The races table identifies the race ID as the primary key, the race name, location, date, and distance. The events ID is the foreign key that references the Events table. 
+
+Race Registration
+
+The race registration table is an associative entity that references the races and runners tables. Races ID and Runner ID are the foreign keys that reference their respective tables. 
+Race registration also identifies the race place and race time. Runners can register for multiple races and each race has multiple registrations, making it a many-to-many relationship. 
+
+Transactions
+
+The transactions table has a primary key of transaction ID. The Runners ID foreign key references the runners table, and the stores ID references the stores table. Runners can have multiple transactions. Transactions acts as an associative entity between stores and runners. 
+
+Stores
+
+Store ID is the primary key of the stores table. The stores table contains the store location and the store products. Each store has multiple transactions, making it a one-to-many relationship. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Queries:
 #1 Show me runners participated in races between january and february:
@@ -163,6 +219,7 @@ FROM Runners
 The company can maintain a record of each runner's personal information, enabling personalized communication and improved customer service.They can access relevant customer data to quickly address issues and provide valuable customer care.
 
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Table: Runners
 
