@@ -1,14 +1,20 @@
 # SQL-Project-1
 MIST 4610 - SQL Project 1
+1. Shana Sah (https://github.com/shana-sah/SQL-Project-1-) 
+2. Maya Patel (https://github.com/mayapatel47488/SQL-Project-1-)
+3. Sofia Slavov (https://github.com/sophiaslavovv/SQL-PROJ-1)
+4. Cade Mayfield (https://github.com/CaMay999/sql-project-1-)
+5. Chris Vitucci (https://github.com/chrisvitucci/SQL-Project-1)
 
-Problem Description:
+
+<u>Problem Description:</u>
 Pretend you are the owner/operator of a RUNNING association (club)
 needing to build a relational database. You hired some students from the MIST 4610 class at
 the University of Georgia to create the database for you. They need to know more about your
 organization to identify which entities, attributes, and relationships are important for you.
 Start by describing your business as a real client.
 
-CHATGPT Response:
+<u>CHATGPT Response:</u>
 As the owner/operator of a running club, our organization is dedicated to promoting health, fitness, and community through the sport of running. We provide a variety of services and activities tailored to runners of all ages and abilities, fostering a supportive environment where individuals can pursue their running goals and connect with like-minded enthusiasts.
 
 Here's a snapshot of our running club:
@@ -29,10 +35,138 @@ Equipment and Gear: Our club may provide access to equipment and gear, such as r
 
 Given this overview, the database should encompass key entities such as Members, Coaches, Events, Races, Training Programs, Workshops, Community Partnerships, Equipment, and Transactions, along with their associated attributes and relationships to effectively manage club operations, member registrations, event planning, coaching services, and inventory tracking.
 
+Question 1  asked to CHATGPT: 
+
+What are the relationships? 
+
+Members - Events: Many-to-Many - Recorded via a junction table (e.g., Attendance).
+
+Members - Races: Many-to-Many - Utilizing a junction table (e.g., RaceRegistration).
+
+Members - Training Programs: Many-to-Many - Managed through a junction table (e.g., ProgramEnrollment).
+
+Coaches - Training Programs: One-to-Many - Coach ID foreign key in the Training Programs table.
+
+Members - Feedback: One-to-Many - Feedback table contains Member ID foreign key.
+
+Members - Volunteers: One-to-Many - Volunteers table links to Member ID.
+
+Members - Medical Information: One-to-One - Medical info stored in Members table or separate with one-to-one relationship.
+
+Members - Transactions: One-to-Many - Transactions table includes Member ID foreign key.
+
+Q2: What are the attributes within each entity? 
+
+CHATGPT RESPONSE: Sure! Let's outline the attributes for each of the entities mentioned earlier:
+
+1.Runners:
+
+Runner ID (Primary Key)
+First Name
+Last Name
+Email
+Phone Number
+Address
+Date of Birth
+Gender
+Emergency Contact Information
+
+2.Coaches:
+
+Coach ID (Primary Key)
+First Name
+Last Name
+Email
+Phone Number
+Coaching Certification(s)
+Specialties/Expertise
+Availability (Days/Time)
+Bio/Description
+
+3.Events:
+Event ID (Primary Key)
+Event Name
+Event Type (e.g., Group Run, Workshop, Race)
+Date
+Time
+Location
+Description
+Registration Deadline
+Maximum Capacity
+
+4.Races:
+Race ID (Primary Key)
+Race Name
+Date
+Location
+Distance
+Registration Fee
+Registration Deadline
+Course Map
+Sponsors
+
+5.Training Programs:
+Program ID (Primary Key)
+Program Name
+Duration
+Focus Areas
+Schedule (Days/Time)
+Coach ID (Foreign Key)
+Description
+Enrollment Capacity
+
+6.Community Partnerships:
+Partnership ID (Primary Key)
+Partner Name
+Contact Person
+Contact Email
+Contact Phone
+Partnership Type
+Description
+Start Date
+End Date
+
+7.Workshops/Seminars:
+Workshop ID (Primary Key)
+Workshop Name
+Date
+Time
+Location
+Presenter(s)
+Description
+Registration Deadline
+Maximum Capacity
+
+8.Equipment/Gear:
+Item ID (Primary Key)
+Item Name
+Description
+Size/Specification
+Quantity Available
+Rental Price
+Purchase Price
+Supplier
+Date Acquired
+
+9.Transactions:
+Transaction ID (Primary Key)
+Member ID (Foreign Key)
+Transaction Date
+Transaction Type (e.g., Membership Fee, Event Registration, Merchandise Purchase)
+Amount
+Payment Method
+
+
+10. Stores
+Associative entity
+11. Clubs
+12. Attendance
+
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Data Model:
-![Runner Data Model](DataM.png)
+![Runner Data Model](proj.png)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -93,21 +227,22 @@ Queries:
 
 #1 Show me runners participated in races between january and february:
 
-SELECT RunnerFirstName,RunnerLastName
-FROM Runners
-JOIN Race Registration ON Runners.idRunners = Race Registration.idRunners
-JOIN Race ON Race Registration.idRaces = Races.idRaces
-WHERE rDate BETWEEN ‘01-01-2023 AND 02-28-2023’
+USE al_Group_21482_G1;
+SELECT r.RunnerFirstName, r.RunnerLastName
+FROM Runners r
+JOIN RaceRegistration rr ON r.idRunners = rr.Runners_idRunners
+JOIN Races ra ON rr.Races_idRaces = ra.idRaces
+WHERE ra.rDate BETWEEN '2024-01-01' AND '2024-04-28';
+
 
 Tracking runners who participated in races during a specific time period can help in monitoring their performance over time. Coaches, athletes, and enthusiasts can gain insights into the progress of individual runners by analyzing their race times, improvements, and consistency.
 
-#2 How many runners does each coach have
+#2 How many runners does each coach have?
 
-Select CoachFN, CoachLN, COUNT(Runners.idRunners) AS NumberOfRunners
+SELECT Coaches.CoachFN, Coaches.CoachLN, COUNT(Runners.idRunners) AS NumberOfRunners
 FROM Coaches
-JOIN Runners ON Coaches.idCoaches=Runners.idCoaches
-GROUP BY CoachFN, CoachLN
-ORDER BY NumberOfRunners DESC;
+LEFT JOIN Runners ON Coaches.idCoaches = Runners.Coaches_idCoaches
+GROUP BY Coaches.CoachFN, Coaches.CoachLN;
 
 Shows which coaches have the most runners in descending order; used for determining popularity of coaches.The number of runners under each coach allows the company to monitor the performance of coaches in terms of their ability to attract and retain runners.
 
@@ -115,111 +250,108 @@ Shows which coaches have the most runners in descending order; used for determin
 
 Select sLocation, COUNT(Transactions.TransactionID) AS NumberOfTransactions
 FROM Transactions
-JOIN Stores on Stores.StoreID=Transactions.StoreID
+JOIN Stores on Stores.StoreID=Transactions.Stores_StoreID
 GROUP BY sLocation
-ORDER BY NumberOfTransactions DESC, Stores.StoreID
+ORDER BY NumberOfTransactions DESC;
+
 
 The transaction data from each store can tell how popular each store was,it  identifies where the most purchases are being made and where the least purchases are made.Transaction data can be used to forecast future sales and plan inventory levels accordingly. The data can provide information to plan for customer behavior and preferences towards products.
 
 
-#4 Display the number of runners having completed training programs
+#4 Report the names of a runner who have a distance higher than their own average distance.
 
-SELECT COUNT(idRunners)
-FROM Runners r
-JOIN Recordings rc ON r.idRunners=rc.idRunners
-WHERE rc.TrainingCompleted = 'Yes';
 
-By displaying the number of runners who complete training programs, the company can assess the effectiveness of the programs they offer. A high completion rate may indicate that the training programs are well-designed and meeting the needs of the runners.
+Select RunnerFirstName, RunnerLastName, Distance
+From Runners
+JOIN RaceRegistration ON Runners.idRunners= RaceRegistration.Runners_idRunners
+JOIN Races ON RaceRegistration.Races_idRaces= Races.idRaces
+WHERE Distance > (
+Select AVG(Distance) FROM 
+Races);
 
-#5 find the name of the training program and the number of runners who have completed it, sort the number of completions in descending order
+Identifying runners who have exceeded their own average distance can provide insights into their performance capabilities and potential for growth. It allows coaches and athletes to recognize achievements, as well as areas where development may be needed.
 
-SELECT programName
-COUNT Runner_idRunners AS NumberOfCompletions
-FROM Training Programs
-JOIN Recordings ON Training Programs.ProgramID = Recordings.Training ProgramsID
-GROUP BY Training Programs.programName
+
+#5 Find the name of the training program and the number of runners who have completed it, sort the number of completions in descending order
+
+SELECT programName,COUNT(Recordings.Runners_idRunners) AS NumberOfCompletions
+FROM Recordings
+JOIN TrainingPrograms ON TrainingPrograms.ProgramID = Recordings.TrainingPrograms_ProgramID
+Join Runners on Runners.idRunners= Recordings.Runners_idRunners
+GROUP BY TrainingPrograms.programName
 ORDER BY NumberofCompletions DESC;
+
 
 This query keeps track of which people have completed which races. Analyzing completion rates can also provide insights into areas for improvement in training programs. Adjustments and enhancements can be displayed to meet the needs of runners/participants.
 
 #6 list and count the names and contact information of the runners who have a guest count greater than 4. Sort in alphabetical order of runner last name
 
-Select RunnerFirstName, RunnerLastName, email, phoneNumber,
-COUNT (*) AS guestCount
+SELECT RunnerFirstName, RunnerLastName, email, PhoneNumber
 FROM Runners
-JOIN Attendance ON Runners.idRunners=Attendance.idRunners
-GROUP BY RunnerFirstName, RunnerLastName, email, phoneNumber
-HAVING guestCount > 4
+WHERE idRunners IN (
+    SELECT Runners_idRunners
+    FROM Attendance
+    GROUP BY Runners_idRunners
+    HAVING COUNT(*) > 0
+)
 ORDER BY RunnerLastName ASC;
 
-Retrieving  the names of the guests can increase participation. Listing the total number of participants who brought lots of guests encourages them to return.Knowing names/contact information of runners who plan to bring more than four guests to an event can help the company or event organizer anticipate attendance numbers accurately.
 
-#7 What is the total number of races each runner has participated in
+This query is useful for retrieving  the names of the guests and attempting to increase participation. Listing the total number of participants who brought lots of guests encourages them to return. Knowing names and contact information of runners who plan to bring more than four guests to an event can help the company or event organizer anticipate attendance numbers accurately. 
 
-SELECT
-    RunnerFirstName,
-    RunnerLastName,
-    COUNT(rr.idRaces) AS TotalRacesParticipated
-FROM Runners
-JOIN `Race Registration` rr ON Runners.idRunners = rr.Runners_idRunners
-GROUP BY RunnerFirstName, RunnerLastName;
+#7 What is the total number of races each runner has participated in?
+
+USE al_Group_21482_G1;
+SELECT r.idRunners, r.RunnerFirstName, r.RunnerLastName, COUNT(rr.Runners_idRunners) AS TotalRaces
+FROM Runners r
+LEFT JOIN RaceRegistration rr ON r.idRunners = rr.Runners_idRunners
+GROUP BY r.idRunners
+ORDER BY TotalRaces DESC;
+
 
 Understanding the race participation history of each runner helps in tailoring training plans and schedules. Runners with more race experience might require different training approaches compared to those who are relatively new to racing.
 
-#8 List members who participated in both events and races
+#8 List members who participated in both events and races.
 
+USE al_Group_21482_G1;
 SELECT RunnerFirstName, RunnerLastName
 FROM Runners
 WHERE idRunners IN (
- SELECT
- Runners_idRunners
- FROM
- `Race Registration`
+ SELECT Runners_idRunners
+ FROM RaceRegistration
  )
-AND
+AND 
  idRunners IN (
- SELECT
- Runners_idRunners
- FROM
- `Attendance`
- WHERE
- guestCount > 0
+ SELECT Runners_idRunners
+ FROM `Attendance`
+ WHERE guestCount > 0
  );
+
  
 Members who participate in both events and races may demonstrate higher levels of loyalty and commitment to the company.Using this information to understand what motivates these individuals to participate in multiple activities can help the company create programs/events to keep customer loyalty.
 
-#9 find the event type and event name off all events with the number of attendees listed
+#9 Find the event type and event name off all events with the number of attendees listed
 
 SELECT EventName,EventType,guestCount
-FROM Events
-JOIN Attendance ON Events.idEvents = attendance.idEvents
-
-They can identify which types of events are most popular and successful in terms of attendance. It allows them to focus on organizing events that resonate with their participants and align with their interests.It helps the company make informed decisions about future event planning
-
-#10 List the runners who have not attended and registered for a race
-
-SELECT RunnerFirstName, RunnerLast Name, Runners.idRunners FROM Runners WHERE NOT EXISTS  (SELECT * FROM Attendance WHERE Attendance.idRunners = Runners.idRunners);
-The company  can reach out to these runners to understand their reasons for not participating and address any concerns or obstacles they may have. The company can use this information to develop new race formats, training programs, or other offerings that better cater to the needs of their participants.
-
-#11 Report the names of a runner who have a distance higher than their own average distance.
-
-Select RunnerFirstName, RunnerLastName
-From Races r
-JOIN Race Registration rr ON r.idRaces=rr.idRaces
-JOIN Runners rn ON rn.idRunners=rr.idRunners
-WHERE Distance > (
-Select AVG(Distance) FROM
-Races)
-
-Identifying runners who have exceeded their own average distance can provide insights into their performance capabilities and potential for growth. It allows coaches and athletes to recognize achievements, as well as areas where development may be needed.
+FROM Events 
+JOIN Attendance ON Events.idEvents = Attendance.Events_idEvents;
 
 
-#12 Display all personal information of each runner
+This query is useful to identify which types of events are most popular and successful in terms of attendance. It allows them to focus on organizing events that resonate with their participants and align with their interests.It helps the company make informed decisions about future event planning
 
-Select RunnerFirstName, RunnerLastName, email, phoneNumber
-FROM Runners
+#10 Which runners finished in the top ten and at what event?
 
-The company can maintain a record of each runner's personal information, enabling personalized communication and improved customer service.They can access relevant customer data to quickly address issues and provide valuable customer care.
+ Select RunnerFirstName, RunnerLastName, RacerPlace, idEvents, EventName
+ From Runners
+ join RaceRegistration on Runners.idRunners= RaceRegistration.Runners_idRunners
+ Join Races on Races.idRaces=RaceRegistration.Races_idRaces
+ join Events on Events.idEvents=Races.Events_idEvents
+ where RacerPlace<11;
+
+This query is useful because the best runners attract the most viewers. By tracking top finishers, we are able to better advertise for future events.
+
+
+
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -228,9 +360,9 @@ The company can maintain a record of each runner's personal information, enablin
 | Column Name        | Description                                                      | Data Type | Size | Format         | Key? |
 |--------------------|------------------------------------------------------------------|-----------|------|----------------|------|
 | idRunners          | Unique sequential number indicating the runner identification    | INT      | 20   |                | PK   |
-| RunnerFirst Name  | The first name of the runner corresponding to a specific ID       | VARCHAR      | 14   |      Text          |      |
-| RunnerLast Name   | The last name of the runner corresponding to a specific ID        | VARCHAR     | 12   |      Text          |      |
-| email              | The contact email corresponding to a specific ID                  | VARCHAR     | 20   |       Text         |      |
+| RunnerFirst Name  | The first name of the runner corresponding to a specific ID       | VARCHAR      | 45   |      Text          |      |
+| RunnerLast Name   | The last name of the runner corresponding to a specific ID        | VARCHAR     | 45   |      Text          |      |
+| email              | The contact email corresponding to a specific ID                  | VARCHAR     | 45   |       Text         |      |
 | phoneNumber        | Phone number of runner in question                               | INT     | 10   | (999)999-9999 |      |
 | Coaches_idCoaches | The ID of each runner's coach                                     |  INT         |      |                | FK(Reference_Coaches)  |
 
@@ -239,9 +371,9 @@ The company can maintain a record of each runner's personal information, enablin
 | Column Name         | Description                                                             | Data Type | Size | Format         | Key? |
 |---------------------|-------------------------------------------------------------------------|-----------|------|----------------|------|
 | idCoaches           | Unique sequential number indicating the identification number of a coach | INT      | 18   |                | PK   |
-| CoachFN             | The first name of the coach corresponding to a specific ID              | VARCHAR     | 14   |           Text     |      |
-| CoachLN             | The last name of the coach corresponding to a specific ID               | VARCHAR      | 12   |       Text         |      |
-| Coachemail          | The contact email corresponding to a specific Coaches ID                 | VARCHAR      | 20   |      Text          |      |
+| CoachFN             | The first name of the coach corresponding to a specific ID              | VARCHAR     | 45   |           Text     |      |
+| CoachLN             | The last name of the coach corresponding to a specific ID               | VARCHAR      | 45   |       Text         |      |
+| Coachemail          | The contact email corresponding to a specific Coaches ID                 | VARCHAR      | 45   |      Text          |      |
 | CoachingCertification | Document identifying the coach as a legally responsible instructor of athletics | VARCHAR | 45 |  |   |
 
 ### Table: Equipment
@@ -249,7 +381,7 @@ The company can maintain a record of each runner's personal information, enablin
 | Column Name   | Description                                                                   | Data Type | Size | Format | Key? |
 |---------------|-------------------------------------------------------------------------------|-----------|------|--------|------|
 | equipmentID   | Unique sequential number indicating the serial number of a piece of equipment | INT      | 20   |        | PK   |
-| equipmentType | Identifies what form of equipment the item is.                                | VARCHAR    | 15   |   Text     |      |
+| equipmentType | Identifies what form of equipment the item is.                                | VARCHAR    | 45   |   Text     |      |
 | EquipmentYear | The year a piece of equipment was produced                                    | DATE   | 4    | 9999   |      |
 | Runners_idRunners | Unique sequential number indicating the runner identification number of the athlete | INT | 20 | | FK (refrence_Runners) |
 
@@ -259,7 +391,7 @@ The company can maintain a record of each runner's personal information, enablin
 | Column Name   | Description                                                             | Data Type | Size | Format | Key? |
 |---------------|-------------------------------------------------------------------------|-----------|------|--------|------|
 | MedicalID     | Unique sequential number indicating the identification number of a medical professional | INT | 25 |        | PK   |
-| DoctorName    | Name corresponding to each doctor                                       | VARCHAR      | 30   |   Text     |      |
+| DoctorName    | Name corresponding to each doctor                                       | VARCHAR      | 45   |   Text     |      |
 | Doctorlocation| Where the medical practitioner is located                               | VARCHAR     | 45   |   Text     |      |
 | Runners_idRunners | Unique sequential number indicating the runner identification number of the athlete | INT | 20 | | FK (refrence_Runners) |
 
@@ -270,15 +402,15 @@ The company can maintain a record of each runner's personal information, enablin
 | Runners_idRunners | Unique sequential number indicating the runner identification number of the athlete | INT | 20 | | FK (refrence_Runners) |
 | Events_idEvents | Unique number corresponding to a specific event                         | INT      | 15   |        | FK (refrence_Events) |
 | guestCount    | Number of guests per event                                             | INT    | 3    |        |      |
-| Club Check-in | How many of each club attended                                         | VARCHAR     | 3    |    Text    |      |
+| Club Check-in | How many of each club attended                                         | VARCHAR     | 45    |    Text    |      |
 
 ### Table: Events
 
 | Column Name   | Description                                                             | Data Type | Size | Format | Key? |
 |---------------|-------------------------------------------------------------------------|-----------|------|--------|------|
 | Events_idEvents | Unique number corresponding to a specific event                         | INT      | 15   |        | PK   |
-| EventName     | Name of an event                                                        | VARCHAR      | 25   |  Text      |      |
-| EventType     | The purpose of the event                                                | VARCHAR      | 20   |  Text      |      |
+| EventName     | Name of an event                                                        | VARCHAR      | 45   |  Text      |      |
+| EventType     | The purpose of the event                                                | VARCHAR      | 45  |  Text      |      |
 | date          | When the event is going to occur                                        | DATE   | 8    | 99-99-9999 |    |
 | location      | Where the event is going to occur                                       | VARCHAR     | 45   |    Text    |      |
 
@@ -287,7 +419,7 @@ The company can maintain a record of each runner's personal information, enablin
 | Column Name   | Description                                                             | Data Type | Size | Format | Key? |
 |---------------|-------------------------------------------------------------------------|-----------|------|--------|------|
 | idRaces       | Identification number of a specific race                                | INT     | 20   |        | PK   |
-| RaceName      | Name of race                                                            | VARCHAR     | 25   |  Text      |      |
+| RaceName      | Name of race                                                            | VARCHAR     | 45  |  Text      |      |
 | rLocation     | Location of the race                                                    | VARCHAR     | 45   |  Text      |      |
 | rDate         | Race date                                                               | DATE   | 8    | 99-99-9999 |    |
 | Distance      | How far is the race                                                     | INT      | 3    | 9.99     |      |
@@ -307,10 +439,10 @@ The company can maintain a record of each runner's personal information, enablin
 | Column Name   | Description                                                             | Data Type | Size | Format | Key? |
 |---------------|-------------------------------------------------------------------------|-----------|------|--------|------|
 | ProgramID     | The identification number corresponding to a specific training program  | INT     | 20   |        | PK   |
-| programName   | The Name of a training program                                          | VARCHAR     | 25   |   Text     |      |
+| programName   | The Name of a training program                                          | VARCHAR     | 45   |   Text     |      |
 | Date      | When the session is occuring                                                | DATE   | 4    | 99-99-9999  |      |
-| FocusAreas    | What is the focus of the workout                                        | VARCHAR     | 15   |  Text      |      |
-| Tschedule     | When are these programs available                                        | VARCHAR   | 8    | Text |    |
+| FocusAreas    | What is the focus of the workout                                        | VARCHAR     | 45   |  Text      |      |
+| Tschedule     | When are these programs available                                        | VARCHAR   | 45   | Text |    |
 | Coaches_idCoaches | Unique sequential number indicating the identification number of a coach | INT | 18 | | FK(reference_Coaches) |
 
 ### Table: Recordings
@@ -319,7 +451,7 @@ The company can maintain a record of each runner's personal information, enablin
 |---------------|-------------------------------------------------------------------------|-----------|------|--------|------|
 | Runners_idRunners | Unique sequential number indicating the runner identification number of the athlete | INT | 20 | | FK (refrence_Runners) |
 | Training Programs_ProgramID | The identification number corresponding to a specific training program  | INT | 20 | | FK(reference_Training Programs) |
-| Training Completed | Was the training completed, yes or no?                                  | VARCHAR      | 3    |  Text      |      |
+| Training Completed | Was the training completed, yes or no?                                  | VARCHAR      | 45    |  Text      |      |
 | TrainingLocation | Where do the training sessions                                          | VARCHAR      | 45   |     Text   |      |
 
 ### Table: Transactions
@@ -352,5 +484,5 @@ The company can maintain a record of each runner's personal information, enablin
 | ORDER BY      |   | x | x |   | x | x |   |  |  |    |
 | JOIN          |  | x | x | x | x | x | x |   | x  |   |
 | DOUBLE JOIN   | x  |   |   |   |   |   |   |   |   |   |
-| NOT EXISTS    |   |   |   |   |   |   |   |   |   |  x  |
-| SUBQUERY      |   |   |  |   |   |  |   | x |   | x   |
+| TRIPLE JOIN   |   |   |   |   |   |   |   |   |   |  X |
+| SUBQUERY      |   |   |  |   |   |  |   | x |   |   |
